@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes Page</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* General Styles */
+        :root {
+            --primary: #64b5f6; /* Light Blue */
+            --secondary:#64b5f6; /* Coral */
+            --background: #f9f9f9; /* Light background */
+            --text: #333333; /* Dark text */
+            --card-bg: #ffffff; /* White cards */
+            --shadow: 0 4px 12px rgba(93, 132, 247, 0.84); /* Soft shadow */
+            --radius: 12px; /* Rounded corners */
+            --transition: all 0.3s ease; /* Smooth transitions */
+        }
+
+        [data-theme="dark"] {
+            --background: #1e1e1e; /* Dark background */
+            --text: #f5f5f5; /* Light text */
+            --card-bg: #2d2d2d; /* Dark cards */
+            --shadow: 0 4px 12px rgba(93, 132, 247, 0.84); /* Darker shadow */
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            transition: var(--transition);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        h2 {
+            color: var(--primary);
+            margin: 0 0 15px 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.1); /* Transparent white */
+            backdrop-filter: blur(10px); /* Blur effect */
+            -webkit-backdrop-filter: blur(10px); /* For Safari support */
+            border-radius: 15px; /* Rounded corners */
+            border: 1px solid rgba(255, 255, 255, 0.3); /* Subtle border */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Soft shadow */
+            padding: 20px;
+            transition: var(--transition);
+            margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    
+        }
+
+        
+
+        /* Navbar Styles */
+        nav {
+            background-color: var(--primary);
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: var(--radius);
+            margin-bottom: 5px;
+           
+            margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 10px;
+        }
+
+        .home-link {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        nav a:hover {
+            color: #fff;
+        }
+
+        .theme-toggle {
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        /* Section styles */
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-top: 10px;
+        }
+
+        .input-group input, .input-group textarea {
+            padding: 10px;
+            font-size: 1rem;
+            border-radius: var(--radius);
+            border: 2px solid #77d3fd;
+            width: 90%;
+            background: rgba(255, 255, 255, 0.055); /* Transparent white */
+            backdrop-filter: blur(10px); /* Blur effect */
+            -webkit-backdrop-filter: blur(10px); /* For Safari support */
+            margin-top: 5px;
+            color: var(--text);
+            box-shadow: 0 4px 10px rgba(110, 148, 255, 0.2); /* Soft shadow */
+            transition: var(--transition);
+        }
+
+        .input-group button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .input-group button:hover {
+            background-color: #1fb6e4;
+        }
+
+        /* Notes List styles */
+        .note-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .note-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: var(--radius);
+        }
+
+        .note-item.pinned {
+            background-color: #ffe08296;
+        }
+
+        .note-item .delete-btn {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: var(--radius);
+            font-size: 0.8rem;
+        }
+
+        .note-item .delete-btn:hover {
+            background-color: #64b5f6;
+        }
+
+        .note-item .pin-btn {
+            background-color: #ffca28;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: var(--radius);
+            font-size: 0.8rem;
+        }
+
+        .note-item .pin-btn:hover {
+            background-color: #ffb300;
+        }
+
+        .reset-btn {
+            padding: 10px 20px;
+            border: none;
+            background-color: #64b5f6;
+            color: white;
+            font-size: 1rem;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin: 10px;
+        }
+
+        .reset-btn:hover {
+            background-color:#64b5f6;
+        }
+/* Create moving gradient circles in the background */
+@keyframes moveCircles {
+    0% {
+        transform: translate(-100px, -100px);
+    }
+    100% {
+        transform: translate(100vw, 100vh);
+    }
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh; /* Ensure body takes up full viewport height */
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Style the moving gradient circles */
+.background-circle {
+    position: absolute;
+    border-radius: 50%;
+    background: conic-gradient(
+        from 180deg,
+        rgba(100, 181, 246, 0.6) 0%,
+        rgba(66, 165, 245, 0.6) 50%,
+        rgba(33, 150, 243, 0.6) 100%
+    );
+    opacity: 0.6;
+    animation: moveCircles 40s linear infinite; /* Controls the speed and direction */
+    pointer-events: none; /* Prevent interaction with the circles */
+    backdrop-filter: blur(40px); /* Blurs the edges more */
+    z-index: -1; /* Make sure the circles stay behind content */
+}
+
+/* Randomize the size, speed, and position of each circle */
+.background-circle:nth-child(1) {
+    width: 150px;
+    height: 150px;
+    top: 10%;
+    left: 10%;
+    animation-duration: 35s;
+}
+.background-circle:nth-child(2) {
+    width: 200px;
+    height: 200px;
+    top: 30%;
+    left: 30%;
+    animation-duration: 40s;
+}
+.background-circle:nth-child(3) {
+    width: 250px;
+    height: 250px;
+    top: 50%;
+    left: 50%;
+    animation-duration: 45s;
+}
+.background-circle:nth-child(4) {
+    width: 100px;
+    height: 100px;
+    top: 70%;
+    left: 70%;
+    animation-duration: 50s;
+}
+.background-circle:nth-child(5) {
+    width: 180px;
+    height: 180px;
+    top: 40%;
+    left: 60%;
+    animation-duration: 40s;
+}
+
+/* Add more circles by duplicating the above code and adjusting positions/sizes */
+
+        /* Media Queries */
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        
+
+        <!-- Navbar -->
+        <nav>
+            <a href="index.html" class="home-link">Home</a>
+            <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+        </nav>
+<!-- Add this in the body to inject moving circles -->
+<div class="background-circle"></div>
+<div class="background-circle"></div>
+<div class="background-circle"></div>
+<div class="background-circle"></div>
+<div class="background-circle"></div>
+<!-- More circles can be added here if needed -->
+
+        <!-- Notes Section -->
+        <div class="card">
+            <h2>My Notes</h2>
+
+            <!-- Add Note -->
+            <div class="section">
+                <div class="input-group">
+                    <label for="note-title">Title:</label>
+                    <input type="text" id="note-title" placeholder="Enter note title">
+                </div>
+                <div class="input-group">
+                    <label for="note-content">Content:</label>
+                    <textarea id="note-content" placeholder="Write your note here" rows="4"></textarea>
+                </div>
+                <button onclick="addNote() "class="reset-btn">Add Note</button>
+                <ul id="note-list" class="note-list"></ul>
+            </div>
+
+            <!-- Reset Button -->
+            <button class="reset-btn" onclick="resetData()">Reset All Notes</button>
+        </div>
+    </div>
+
+    <script>
+        // Data storage for the notes
+        let dailyNotes = [];
+
+        // Load data from localStorage
+        window.onload = function() {
+            const savedNotes = JSON.parse(localStorage.getItem('notesData'));
+            if (savedNotes) {
+                dailyNotes = savedNotes;
+                renderNotes();
+            }
+        };
+
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('notesData', JSON.stringify(dailyNotes));
+        }
+
+        // Toggle Theme
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            document.documentElement.setAttribute('data-theme', currentTheme === 'dark' ? '' : 'dark');
+        }
+
+        // Add Note
+        function addNote() {
+            const title = document.getElementById('note-title').value;
+            const content = document.getElementById('note-content').value;
+            if (title && content) {
+                const note = { title, content, pinned: false };
+                dailyNotes.push(note);
+                document.getElementById('note-title').value = '';
+                document.getElementById('note-content').value = '';
+                renderNotes();
+                saveData();
+            }
+        }
+
+        // Render Notes
+        function renderNotes() {
+            const noteList = document.getElementById('note-list');
+            noteList.innerHTML = '';
+            dailyNotes.forEach((note, index) => {
+                const li = document.createElement('li');
+                li.className = `note-item ${note.pinned ? 'pinned' : ''}`;
+                li.innerHTML = `
+                    <div>
+                        <strong>${note.title}</strong><br>
+                        ${note.content}
+                    </div>
+                    <div>
+                        <button class="pin-btn" onclick="togglePin(${index})">
+                            ${note.pinned ? 'Unpin' : 'Pin'}
+                        </button>
+                        <button class="delete-btn" onclick="deleteNote(${index})">Delete</button>
+                    </div>
+                `;
+                noteList.appendChild(li);
+            });
+        }
+
+        // Toggle Pin
+        function togglePin(index) {
+            dailyNotes[index].pinned = !dailyNotes[index].pinned;
+            renderNotes();
+            saveData();
+        }
+
+        // Delete Note
+        function deleteNote(index) {
+            dailyNotes.splice(index, 1);
+            renderNotes();
+            saveData();
+        }
+
+        // Reset data function
+        function resetData() {
+            dailyNotes = [];
+            renderNotes();
+            saveData();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Health Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* General Styles */
+        :root {
+            --primary: #64b5f6; /* Light Blue */
+            --secondary: #210db4; /* Coral */
+            --background: #f9f9f9; /* Light background */
+            --text: #333333; /* Dark text */
+            --card-bg: #ffffff; /* White cards */
+            --shadow: 0 4px 12px rgba(14, 100, 211, 0.3); /* Soft shadow */
+            --radius: 12px; /* Rounded corners */
+            --transition: all 0.3s ease; /* Smooth transitions */
+        }
+
+        [data-theme="dark"] {
+            --background: #1e1e1e; /* Dark background */
+            --text: #f5f5f5; /* Light text */
+            --card-bg: #2d2d2d; /* Dark cards */
+            --shadow: 0 4px 12px rgba(116, 176, 255, 0.3); /* Darker shadow */
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            transition: var(--transition);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        h2 {
+            color: var(--primary);
+            margin: 0 0 15px 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.1); /* Transparent white */
+            backdrop-filter: blur(10px); /* Blur effect */
+            -webkit-backdrop-filter: blur(10px); /* For Safari support */
+            border-radius: 15px; /* Rounded corners */
+            border: 1px solid rgba(255, 255, 255, 0.3); /* Subtle border */
+            box-shadow: 0 4px 10px rgba(8, 132, 233, 0.807); /* Soft shadow */
+            padding: 20px;
+            transition: var(--transition);
+            margin-bottom: 10px;
+            margin-left: 10px;
+    margin-right: 10px;
+  
+        }
+
+       
+
+        /* Navbar Styles */
+        nav {
+            background-color: var(--primary);
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: var(--radius);
+            margin-bottom: 5px;
+            
+            margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 10px;
+        }
+
+        .home-link {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        nav a:hover {
+            color: #fff;
+        }
+
+        .theme-toggle {
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        /* Section styles */
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .checkbox-group input {
+            margin-right: 5px;
+        }
+
+        .checkbox-group label {
+            display: inline-flex;
+            align-items: center;
+            font-size: 1rem;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            margin-right: 5px;
+        }
+
+        /* Water Intake - Water Droplet Shapes */
+        .water-intake {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .water-droplet {
+            width: 40px;
+            height: 60px;
+            background-color: #64b5f6;
+            clip-path: checkbox(50% 0%, 0% 30%, 25% 100%, 75% 100%, 100% 30%);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .water-droplet.selected {
+            background-color: #0a85cc;
+        }
+
+        .rating-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .rating-group input {
+            margin-right: 5px;
+        }
+
+        .notes-input {
+            padding: 10px;
+            font-size: 1rem;
+            border-radius: var(--radius);
+            border: 2px solid #77d3fd;
+            width: 90%;
+            background: rgba(255, 255, 255, 0.055); /* Transparent white */
+            backdrop-filter: blur(10px); /* Blur effect */
+            -webkit-backdrop-filter: blur(10px); /* For Safari support */
+            margin-top: 5px;
+            color: var(--text);
+            box-shadow: 0 4px 10px rgba(110, 148, 255, 0.2); /* Soft shadow */
+            transition: var(--transition);
+        }
+
+        .reset-btn {
+            padding: 10px 20px;
+            border: none;
+            background-color: var(--primary);
+            color: white;
+            font-size: 1rem;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .reset-btn:hover {
+            background-color: var(--primary);
+        }
+/* Create moving gradient circles in the background */
+@keyframes moveCircles {
+    0% {
+        transform: translate(-100px, -100px);
+    }
+    100% {
+        transform: translate(100vw, 100vh);
+    }
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh; /* Ensure body takes up full viewport height */
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Style the moving gradient circles */
+.background-circle {
+    position: absolute;
+    border-radius: 50%;
+    background: conic-gradient(
+        from 180deg,
+        rgba(100, 181, 246, 0.6) 0%,
+        rgba(66, 165, 245, 0.6) 50%,
+        rgba(33, 150, 243, 0.6) 100%
+    );
+    opacity: 0.6;
+    animation: moveCircles 40s linear infinite; /* Controls the speed and direction */
+    pointer-events: none; /* Prevent interaction with the circles */
+    backdrop-filter: blur(40px); /* Blurs the edges more */
+    z-index: -1; /* Make sure the circles stay behind content */
+}
+
+/* Randomize the size, speed, and position of each circle */
+.background-circle:nth-child(1) {
+    width: 150px;
+    height: 150px;
+    top: 10%;
+    left: 10%;
+    animation-duration: 35s;
+}
+.background-circle:nth-child(2) {
+    width: 200px;
+    height: 200px;
+    top: 30%;
+    left: 30%;
+    animation-duration: 40s;
+}
+.background-circle:nth-child(3) {
+    width: 250px;
+    height: 250px;
+    top: 50%;
+    left: 50%;
+    animation-duration: 45s;
+}
+.background-circle:nth-child(4) {
+    width: 100px;
+    height: 100px;
+    top: 70%;
+    left: 70%;
+    animation-duration: 50s;
+}
+.background-circle:nth-child(5) {
+    width: 180px;
+    height: 180px;
+    top: 40%;
+    left: 60%;
+    animation-duration: 40s;
+}
+
+/* Add more circles by duplicating the above code and adjusting positions/sizes */
+
+        /* Media Queries */
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                padding: 15px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Navbar -->
+        <nav>
+            <a href="index.html" class="home-link">Home</a>
+            <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+        </nav>
+        <!-- Add this in the body to inject moving circles -->
+<div class="background-circle"></div>
+<div class="background-circle"></div>
+<div class="background-circle"></div>
+<div class="background-circle"></div>
+<div class="background-circle"></div>
+<!-- You can add more circles if needed -->
+
+
+        <!-- Health Tracker -->
+        <div class="card">
+            <h2>Daily Health Tracker</h2>
+
+            <!-- Meals Section -->
+            <div class="section">
+                <h3>Meals of the Day 🍽️</h3>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" id="breakfast"> Breakfast</label>
+                    <label><input type="checkbox" id="lunch"> Lunch</label>
+                    <label><input type="checkbox" id="dinner"> Dinner</label>
+                </div>
+            </div>
+
+            <!-- Water Intake Section -->
+            <div class="section">
+                <h3>Water Intake 💧</h3>
+                <div class="water-intake">
+                    <div class="water-droplet" onclick="toggleWater(1)" id="water1"></div>
+                    <div class="water-droplet" onclick="toggleWater(2)" id="water2"></div>
+                    <div class="water-droplet" onclick="toggleWater(3)" id="water3"></div>
+                    <div class="water-droplet" onclick="toggleWater(4)" id="water4"></div>
+                    <div class="water-droplet" onclick="toggleWater(5)" id="water5"></div>
+                </div>
+            </div>
+
+            <!-- Rating Your Day Section -->
+            <div class="section">
+                <h3>Rate Your Day 🌟</h3>
+                <div class="rating-group">
+                    <label><input type="radio" name="rating" value="ok"> OK</label>
+                    <label><input type="radio" name="rating" value="good"> Good</label>
+                    <label><input type="radio" name="rating" value="awesome"> Awesome</label>
+                </div>
+            </div>
+
+            <!-- Activities Section -->
+            <div class="section">
+                <h3>Activities 🏃‍♀️</h3>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" id="exercise"> Exercise</label>
+                    <label><input type="checkbox" id="relaxation"> Guilt-Free Relaxation</label>
+                    <label><input type="checkbox" id="meditation"> Meditation</label>
+                </div>
+            </div>
+
+            <!-- Note for Tomorrow Section -->
+            <div class="section">
+                <h3>Note for a Better Tomorrow ✍️</h3>
+                <textarea class="notes-input" id="note" placeholder="Write something for tomorrow..."></textarea>
+            </div>
+
+            <!-- Reset Button -->
+            <button class="reset-btn" onclick="resetData()">Reset</button>
+        </div>
+    </div>
+
+    <script>
+        // Data storage for the day
+        let dailyData = {
+            meals: { breakfast: false, lunch: false, dinner: false },
+            waterIntake: [false, false, false, false, false],
+            rating: '',
+            activities: { exercise: false, relaxation: false, meditation: false },
+            note: ''
+        };
+
+        // Load data from localStorage (if any)
+        window.onload = function() {
+            const savedData = JSON.parse(localStorage.getItem('dailyHealthData'));
+            if (savedData) {
+                dailyData = savedData;
+
+                // Set checkboxes
+                document.getElementById('breakfast').checked = dailyData.meals.breakfast;
+                document.getElementById('lunch').checked = dailyData.meals.lunch;
+                document.getElementById('dinner').checked = dailyData.meals.dinner;
+
+                // Set water droplets
+                dailyData.waterIntake.forEach((intake, index) => {
+                    if (intake) {
+                        document.getElementById('water' + (index + 1)).classList.add('selected');
+                    }
+                });
+
+                // Set rating
+                const ratingRadios = document.getElementsByName('rating');
+                ratingRadios.forEach(radio => {
+                    if (radio.value === dailyData.rating) {
+                        radio.checked = true;
+                    }
+                });
+
+                // Set activities
+                document.getElementById('exercise').checked = dailyData.activities.exercise;
+                document.getElementById('relaxation').checked = dailyData.activities.relaxation;
+                document.getElementById('meditation').checked = dailyData.activities.meditation;
+
+                // Set note
+                document.getElementById('note').value = dailyData.note;
+            }
+        };
+
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('dailyHealthData', JSON.stringify(dailyData));
+        }
+
+        // Toggle Water Intake Droplets
+        function toggleWater(waterId) {
+            const droplet = document.getElementById('water' + waterId);
+            droplet.classList.toggle('selected');
+            dailyData.waterIntake[waterId - 1] = droplet.classList.contains('selected');
+            saveData(); // Save updated data
+        }
+
+        // Theme toggle
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            document.documentElement.setAttribute('data-theme', currentTheme === 'dark' ? '' : 'dark');
+        }
+
+        // Reset data function
+        function resetData() {
+            dailyData = {
+                meals: { breakfast: false, lunch: false, dinner: false },
+                waterIntake: [false, false, false, false, false],
+                rating: '',
+                activities: { exercise: false, relaxation: false, meditation: false },
+                note: ''
+            };
+            document.querySelectorAll('input[type="checkbox"]').forEach(el => el.checked = false);
+            document.querySelectorAll('input[type="radio"]').forEach(el => el.checked = false);
+            document.getElementById('note').value = '';
+            document.querySelectorAll('.water-droplet').forEach(el => el.classList.remove('selected'));
+            saveData(); // Save reset data
+            console.log('Data reset');
+        }
+
+        // Update dailyData when checkboxes/radio buttons change
+        document.querySelectorAll('input[type="checkbox"]').forEach(el => {
+            el.addEventListener('change', () => {
+                dailyData.meals.breakfast = document.getElementById('breakfast').checked;
+                dailyData.meals.lunch = document.getElementById('lunch').checked;
+                dailyData.meals.dinner = document.getElementById('dinner').checked;
+                dailyData.activities.exercise = document.getElementById('exercise').checked;
+                dailyData.activities.relaxation = document.getElementById('relaxation').checked;
+                dailyData.activities.meditation = document.getElementById('meditation').checked;
+                saveData(); // Save updated data
+            });
+        });
+
+        document.querySelectorAll('input[type="radio"]').forEach(el => {
+            el.addEventListener('change', () => {
+                dailyData.rating = document.querySelector('input[name="rating"]:checked')?.value || '';
+                saveData(); // Save updated data
+            });
+        });
+
+        document.getElementById('note').addEventListener('input', (event) => {
+            dailyData.note = event.target.value;
+            saveData(); // Save updated data
+        });
+    </script>
+</body>
+</html>

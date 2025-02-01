@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* General Styles */
+        :root {
+            --primary: #64b5f6; /* Light Blue */
+            --secondary: #64b5f6; /* Coral */
+            --background: #f9f9f9; /* Light background */
+            --text: #000000; /* Dark text */
+            --card-bg: #ffffff; /* White cards */
+            --shadow: 0 4px 12px rgba(114, 217, 255, 0.944); /* Soft shadow */
+            --radius: 12px; /* Rounded corners */
+            --transition: all 0.3s ease; /* Smooth transitions */
+        }
+
+        [data-theme="dark"] {
+            --background: #1e1e1e; /* Dark background */
+            --text: #fafafa; /* Light text */
+            --card-bg: #2d2d2d; /* Dark cards */
+            --shadow: 0 4px 12px rgba(114, 217, 255, 0.942); /* Darker shadow */
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            transition: var(--transition);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        h2 {
+            color: var(--primary);
+            margin: 0 0 15px 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.1); /* Transparent white */
+            backdrop-filter: blur(10px); /* Blur effect */
+            -webkit-backdrop-filter: blur(10px); /* For Safari support */
+            border-radius: 15px; /* Rounded corners */
+            border: 1px solid rgba(255, 255, 255, 0.3); /* Subtle border */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Soft shadow */
+            padding: 20px;
+            transition: var(--transition);
+            margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+        }
+
+        
+
+        /* Navbar Styles */
+        nav {
+            background-color: var(--primary);
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: var(--radius);
+            margin-bottom: 5px;
+            margin-top: 10px;
+            margin-left: 10px;
+    margin-right: 10px;;
+        }
+
+        .home-link {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        nav a:hover {
+            color: #fff;
+        }
+
+        .theme-toggle {
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        /* Section styles */
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-top: 10px;
+        }
+
+        .input-group input, .input-group textarea {
+            padding: 10px;
+            font-size: 1rem;
+            border-radius: var(--radius);
+            border: 2px solid #77d3fd;
+            width: 90%;
+            background: rgba(255, 255, 255, 0.055); /* Transparent white */
+            backdrop-filter: blur(10px); /* Blur effect */
+            -webkit-backdrop-filter: blur(10px); /* For Safari support */
+            margin-top: 5px;
+            color: var(--text);
+            box-shadow: 0 4px 10px rgba(110, 148, 255, 0.2); /* Soft shadow */
+            transition: var(--transition);
+        }
+
+        .input-group button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: var(--secondary);
+            border: none;
+            border-radius: var(--radius);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .input-group button:hover {
+            background-color: #64b5f6;
+            color: var(--text);
+        }
+
+        /* Task List styles */
+        .task-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: var(--radius);
+        }
+
+        .task-item.completed {
+            text-decoration: line-through;
+            background-color: #e0e0e050;
+        }
+
+        .delete-btn {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: var(--radius);
+            font-size: 0.8rem;
+        }
+
+        .delete-btn:hover {
+            background-color: #64b5f6;
+        }
+
+        .reset-btn {
+            padding: 10px 20px;
+            border: none;
+            background-color: #64b5f6;
+            color: white;
+            font-size: 1rem;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .reset-btn:hover {
+            background-color: #64b5f6;
+        }
+
+        .call {
+            padding: 10px 20px;
+            border: none;
+            background-color: #64b5f6;
+            color: white;
+            font-size: 1rem;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+        }
+
+        .call:hover {
+            background-color: #64b5f6;
+        }
+/* Create moving gradient circles in the background */
+@keyframes moveCircles {
+    0% {
+        transform: translate(-100px, -100px);
+    }
+    100% {
+        transform: translate(100vw, 100vh);
+    }
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh; /* Ensure body takes up full viewport height */
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Style the moving gradient circles */
+.background-circle {
+    position: absolute;
+    border-radius: 50%;
+    background: conic-gradient(
+        from 180deg,
+        rgba(100, 181, 246, 0.6) 0%,
+        rgba(66, 165, 245, 0.6) 50%,
+        rgba(33, 150, 243, 0.6) 100%
+    );
+    opacity: 0.6;
+    animation: moveCircles 40s linear infinite; /* Controls the speed and direction */
+    pointer-events: none; /* Prevent interaction with the circles */
+    backdrop-filter: blur(40px); /* Blurs the edges more */
+    z-index: -1; /* Make sure the circles stay behind content */
+}
+
+/* Randomize the size, speed, and position of each circle */
+.background-circle:nth-child(1) {
+    width: 150px;
+    height: 150px;
+    top: 10%;
+    left: 10%;
+    animation-duration: 35s;
+}
+.background-circle:nth-child(2) {
+    width: 200px;
+    height: 200px;
+    top: 30%;
+    left: 30%;
+    animation-duration: 40s;
+}
+.background-circle:nth-child(3) {
+    width: 250px;
+    height: 250px;
+    top: 50%;
+    left: 50%;
+    animation-duration: 45s;
+}
+.background-circle:nth-child(4) {
+    width: 100px;
+    height: 100px;
+    top: 70%;
+    left: 70%;
+    animation-duration: 50s;
+}
+.background-circle:nth-child(5) {
+    width: 180px;
+    height: 180px;
+    top: 40%;
+    left: 60%;
+    animation-duration: 40s;
+}
+
+/* Add more circles by duplicating the above code and adjusting positions/sizes */
+
+        /* Media Queries */
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Navbar -->
+        <nav>
+            <a href="index.html" class="home-link">Home</a>
+            <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+        </nav>
+<!-- Add this in the body to inject moving circles -->
+<div class="background-circle"></div>
+<div class="background-circle"></div>
+<div class="background-circle"></div>
+<div class="background-circle"></div>
+<div class="background-circle"></div>
+<!-- You can add more circles if needed -->
+
+        <!-- Task Manager -->
+        <div class="card">
+            <h2>Task Manager</h2>
+
+            <!-- Calls Section -->
+            <div class="section">
+                <h2>Calls 📞</h2>
+                <div class="input-group">
+                    <label for="call-name">Name:</label>
+                    <input type="text" id="call-name" placeholder="Enter name">
+                </div>
+                <div class="input-group">
+                    <label for="call-phone">Phone Number:</label>
+                    <input type="text" id="call-phone" placeholder="Enter phone number">
+                </div>
+                <button onclick="addCall()" class="call">Add Call</button>
+                <ul id="call-list" class="task-list"></ul>
+            </div>
+
+            <!-- Appointments Section -->
+            <div class="section">
+                <h2>Appointments 📅</h2>
+                <div class="input-group">
+                    <label for="appointment-time">Time:</label>
+                    <input type="text" id="appointment-time" placeholder="Enter time">
+                </div>
+                <div class="input-group">
+                    <label for="appointment-place">Place:</label>
+                    <input type="text" id="appointment-place" placeholder="Enter place">
+                </div>
+                <button onclick="addAppointment()" class="call">Add Appointment</button>
+                <ul id="appointment-list" class="task-list"></ul>
+            </div>
+
+            <!-- Emails Section -->
+            <div class="section">
+                <h2>Emails 📧</h2>
+                <div class="input-group">
+                    <label for="email-subject">Subject:</label>
+                    <input type="text" id="email-subject" placeholder="Enter subject">
+                </div>
+                <div class="input-group">
+                    <label for="email-id">Email ID:</label>
+                    <input type="text" id="email-id" placeholder="Enter email ID">
+                </div>
+                <button onclick="addEmail()" class="call">Add Email</button>
+                <ul id="email-list" class="task-list"></ul>
+            </div>
+
+            <!-- Reset Button -->
+            <button class="reset-btn" onclick="resetData()">Reset All Data</button>
+        </div>
+    </div>
+
+    <script>
+        // Data storage for the day
+        let dailyData = {
+            calls: [],
+            appointments: [],
+            emails: []
+        };
+
+        // Load data from localStorage
+        window.onload = function() {
+            const savedData = JSON.parse(localStorage.getItem('taskManagerData'));
+            if (savedData) {
+                dailyData = savedData;
+                renderCalls();
+                renderAppointments();
+                renderEmails();
+            }
+        };
+
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('taskManagerData', JSON.stringify(dailyData));
+        }
+
+        // Toggle Theme
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            document.documentElement.setAttribute('data-theme', currentTheme === 'dark' ? '' : 'dark');
+        }
+
+        // Add Call
+        function addCall() {
+            const name = document.getElementById('call-name').value;
+            const phone = document.getElementById('call-phone').value;
+            if (name && phone) {
+                const call = { name, phone, completed: false };
+                dailyData.calls.push(call);
+                document.getElementById('call-name').value = '';
+                document.getElementById('call-phone').value = '';
+                renderCalls();
+                saveData();
+            }
+        }
+
+        // Add Appointment
+        function addAppointment() {
+            const time = document.getElementById('appointment-time').value;
+            const place = document.getElementById('appointment-place').value;
+            if (time && place) {
+                const appointment = { time, place, completed: false };
+                dailyData.appointments.push(appointment);
+                document.getElementById('appointment-time').value = '';
+                document.getElementById('appointment-place').value = '';
+                renderAppointments();
+                saveData();
+            }
+        }
+
+        // Add Email
+        function addEmail() {
+            const subject = document.getElementById('email-subject').value;
+            const email = document.getElementById('email-id').value;
+            if (subject && email) {
+                const emailEntry = { subject, email, completed: false };
+                dailyData.emails.push(emailEntry);
+                document.getElementById('email-subject').value = '';
+                document.getElementById('email-id').value = '';
+                renderEmails();
+                saveData();
+            }
+        }
+
+        // Render Calls
+        function renderCalls() {
+            const callList = document.getElementById('call-list');
+            callList.innerHTML = '';
+            dailyData.calls.forEach((call, index) => {
+                const li = document.createElement('li');
+                li.className = `task-item ${call.completed ? 'completed' : ''}`;
+                li.innerHTML = `
+                    <input type="checkbox" ${call.completed ? 'checked' : ''} onclick="toggleCallCompletion(${index})">
+                    ${call.name} - ${call.phone}
+                    <button class="delete-btn" onclick="deleteCall(${index})">Delete</button>
+                `;
+                callList.appendChild(li);
+            });
+        }
+
+        // Render Appointments
+        function renderAppointments() {
+            const appointmentList = document.getElementById('appointment-list');
+            appointmentList.innerHTML = '';
+            dailyData.appointments.forEach((appointment, index) => {
+                const li = document.createElement('li');
+                li.className = `task-item ${appointment.completed ? 'completed' : ''}`;
+                li.innerHTML = `
+                    <input type="checkbox" ${appointment.completed ? 'checked' : ''} onclick="toggleAppointmentCompletion(${index})">
+                    ${appointment.time} - ${appointment.place}
+                    <button class="delete-btn" onclick="deleteAppointment(${index})">Delete</button>
+                `;
+                appointmentList.appendChild(li);
+            });
+        }
+
+        // Render Emails
+        function renderEmails() {
+            const emailList = document.getElementById('email-list');
+            emailList.innerHTML = '';
+            dailyData.emails.forEach((emailEntry, index) => {
+                const li = document.createElement('li');
+                li.className = `task-item ${emailEntry.completed ? 'completed' : ''}`;
+                li.innerHTML = `
+                    <input type="checkbox" ${emailEntry.completed ? 'checked' : ''} onclick="toggleEmailCompletion(${index})">
+                    ${emailEntry.subject} - ${emailEntry.email}
+                    <button class="delete-btn" onclick="deleteEmail(${index})">Delete</button>
+                `;
+                emailList.appendChild(li);
+            });
+        }
+
+        // Toggle Call Completion
+        function toggleCallCompletion(index) {
+            dailyData.calls[index].completed = !dailyData.calls[index].completed;
+            renderCalls();
+            saveData();
+        }
+
+        // Toggle Appointment Completion
+        function toggleAppointmentCompletion(index) {
+            dailyData.appointments[index].completed = !dailyData.appointments[index].completed;
+            renderAppointments();
+            saveData();
+        }
+
+        // Toggle Email Completion
+        function toggleEmailCompletion(index) {
+            dailyData.emails[index].completed = !dailyData.emails[index].completed;
+            renderEmails();
+            saveData();
+        }
+
+        // Delete Call
+        function deleteCall(index) {
+            dailyData.calls.splice(index, 1);
+            renderCalls();
+            saveData();
+        }
+
+        // Delete Appointment
+        function deleteAppointment(index) {
+            dailyData.appointments.splice(index, 1);
+            renderAppointments();
+            saveData();
+        }
+
+        // Delete Email
+        function deleteEmail(index) {
+            dailyData.emails.splice(index, 1);
+            renderEmails();
+            saveData();
+        }
+
+        // Reset data function
+        function resetData() {
+            dailyData = {
+                calls: [],
+                appointments: [],
+                emails: []
+            };
+            renderCalls();
+            renderAppointments();
+            renderEmails();
+            saveData();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern To-Do List</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* General Styles */
+        :root {
+            --primary: #64b5f6;
+            --secondary: #64b5f6;
+            --background: #f9f9f9;
+            --text: #333333;
+            --card-bg: #ffffff;
+            --shadow: 0 4px 12px rgba(14, 100, 211, 0.3);
+            --radius: 12px;
+            --transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] {
+            --background: #1e1e1e;
+            --text: #f5f5f5;
+            --card-bg: #2d2d2d;
+            --shadow: 0 4px 12px rgba(116, 176, 255, 0.362);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            transition: var(--transition);
+        }
+
+        nav {
+            background-color: var(--primary);
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: var(--radius);
+            margin-bottom: 10px;
+            margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 10px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        .theme-toggle {
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: white;
+            padding: 5px 10px;
+            margin-left: 10px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 10px rgba(65, 122, 246, 0.773);
+            padding: 20px;
+            margin-bottom: 20px;
+            margin-left: 10px;
+    margin-right: 10px;
+    
+        }
+
+        .hourly-schedule {
+            display: grid;
+            gap: 10px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            margin-top: 10px;
+        }
+
+        .hourly-slot {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            justify-content: space-between;
+        }
+
+        .hourly-slot .time {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        /* Update the .hourly-slot input styles */
+        .hourly-slot input {
+            background: rgba(255, 255, 255, 0.1);  /* Transparent background */
+            backdrop-filter: blur(10px);            /* Apply glassmorphism */
+            border: 1px solid rgba(3, 0, 0, 0.3); /* Soft border */
+            border-radius: var(--radius);           /* Match card radius */
+            padding: 10px;                          /* Add padding */
+            font-size: 1rem;                        /* Set font size */
+            color: var(--text);                     /* Use text color from theme */
+            width: 100%;                            /* Make input fill the container */
+            transition:  border-color 0.3s ease;  /* Smooth transition */
+        }
+
+        /* Input on focus: slightly change background to indicate focus */
+        .hourly-slot input:focus {
+            background: rgba(255, 255, 255, 0.2);  /* Lighter background on focus */
+            border-color: var(--primary);          /* Highlight border color on focus */
+            outline: none;                         /* Remove default outline */
+        }
+
+        .reset-btn {
+            padding: 10px 20px;
+            border: none;
+            background-color: var(--primary);
+            color: white;
+            font-size: 1rem;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+        }
+
+        .reset-btn:hover {
+            background-color: var(--primary);
+        }
+        /* Create moving gradient circles in the background */
+@keyframes moveCircles {
+    0% {
+        transform: translate(-100px, -100px);
+    }
+    100% {
+        transform: translate(100vw, 100vh);
+    }
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh; /* Ensure body takes up full viewport height */
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Style the moving gradient circles */
+.background-circle {
+    position: absolute;
+    border-radius: 50%;
+    background: conic-gradient(
+        from 180deg,
+        rgba(100, 181, 246, 0.6) 0%,
+        rgba(66, 165, 245, 0.6) 50%,
+        rgba(33, 150, 243, 0.6) 100%
+    );
+    opacity: 0.6;
+    animation: moveCircles 40s linear infinite; /* Controls the speed and direction */
+    pointer-events: none; /* Prevent interaction with the circles */
+    backdrop-filter: blur(40px); /* Blurs the edges more */
+    z-index: -1; /* Make sure the circles stay behind content */
+}
+
+/* Randomize the size, speed, and position of each circle */
+.background-circle:nth-child(1) {
+    width: 150px;
+    height: 150px;
+    top: 10%;
+    left: 10%;
+    animation-duration: 35s;
+}
+.background-circle:nth-child(2) {
+    width: 200px;
+    height: 200px;
+    top: 30%;
+    left: 30%;
+    animation-duration: 40s;
+}
+.background-circle:nth-child(3) {
+    width: 250px;
+    height: 250px;
+    top: 50%;
+    left: 50%;
+    animation-duration: 45s;
+}
+.background-circle:nth-child(4) {
+    width: 100px;
+    height: 100px;
+    top: 70%;
+    left: 70%;
+    animation-duration: 50s;
+}
+.background-circle:nth-child(5) {
+    width: 180px;
+    height: 180px;
+    top: 40%;
+    left: 60%;
+    animation-duration: 40s;
+}
+
+/* Add more circles by duplicating the above code and adjusting positions/sizes */
+
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html">Home</a>
+        <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+    </nav>
+    <div class="container">
+        <!-- Add this in the body to inject moving circles -->
+<div class="background-circle"></div>
+<div class="background-circle"></div>
+<div class="background-circle"></div>
+<div class="background-circle"></div>
+<div class="background-circle"></div>
+<!-- You can add more circles if needed -->
+
+        <div class="card">
+            <h2>Hourly Schedule 🕒</h2>
+            <div class="hourly-schedule" id="schedule">
+                <!-- Hourly slots will be rendered here -->
+                <div class="hourly-slot" data-time="9">
+                    <span class="time">9:00 AM</span>
+                    <input type="text" placeholder="Task for 9:00 AM" id="task9" oninput="updateHourlySchedule(9)">
+                </div>
+                <!-- Repeat the above div for other times (10:00 AM to 10:00 PM) -->
+            </div>
+            <button class="reset-btn" onclick="resetSchedule()">Reset</button>
+        </div>
+    </div>
+
+    <script>
+        let hourlySchedule = JSON.parse(localStorage.getItem('hourlySchedule')) || new Array(24).fill('');
+
+        function updateHourlySchedule(hour) {
+            const input = document.getElementById(`task${hour}`);
+            hourlySchedule[hour] = input.value;
+            localStorage.setItem('hourlySchedule', JSON.stringify(hourlySchedule));
+        }
+
+        function renderSchedule() {
+            const scheduleContainer = document.getElementById('schedule');
+            scheduleContainer.innerHTML = '';
+            for (let hour = 9; hour <= 22; hour++) {
+                const slot = document.createElement('div');
+                slot.classList.add('hourly-slot');
+                slot.innerHTML = `
+                    <span class="time">${hour}:00</span>
+                    <input type="text" id="task${hour}" placeholder="Task for ${hour}:00" value="${hourlySchedule[hour] || ''}" oninput="updateHourlySchedule(${hour})">
+                `;
+                scheduleContainer.appendChild(slot);
+            }
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            document.documentElement.setAttribute('data-theme', currentTheme === 'dark' ? '' : 'dark');
+        }
+
+        function resetSchedule() {
+            // Clear the hourly schedule in the localStorage
+            localStorage.removeItem('hourlySchedule');
+            
+            // Clear all input fields
+            const inputs = document.querySelectorAll('.hourly-schedule input');
+            inputs.forEach(input => input.value = '');
+            
+            // Optionally, reset the hourlySchedule array
+            hourlySchedule = new Array(24).fill('');
+        }
+
+        window.onload = function () {
+            renderSchedule();
+        };
+    </script>
+</body>
+</html>

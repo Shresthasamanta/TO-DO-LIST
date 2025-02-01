@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TO DO PLANNER</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* General Styles */
+        :root {
+            --primary: #64b5f6; /* Pastel pink */
+            --secondary: #b3c4fc; /* Pastel blue */
+            --background: #fff5f8; /* Pastel background */
+            --text: #5d4e6f; /* Dark pastel text */
+            --card-bg: #ffffff; /* White cards */
+            --shadow: 0 4px 12px #64b4f6b7(0, 0, 0, 0.1); /* Soft shadow */
+            --radius: 15px; /* Rounded corners */
+            
+        }
+
+        [data-theme="dark"] {
+            --background: #1e1e1e; /* Dark background */
+            --text: #f5f5f5; /* Light text */
+            --card-bg: #2d2d2d; /* Dark cards */
+            --shadow: 0 4px 12px #64b4f6b7(0, 0, 0, 0.1); /* Darker shadow */
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            background-color: var(--primary);
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: var(--radius);
+            margin-bottom: 5px;
+            margin-top: 20px;
+            margin-left: 20px;
+            margin-right: 20px;
+        }
+
+        .navbar .logo {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color:floralwhite;
+            font-family: 'Cursive', sans-serif;
+        }
+
+        .navbar .nav-links {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+            
+        }
+        .theme-toggle {
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: white;
+        }
+        .navbar .nav-links a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            font-family: 'Poppins', sans-serif;
+            transition: var(--transition);
+        }
+
+        .navbar .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .navbar .menu-icon {
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: #ffffff;
+            
+        }
+
+        /* Mobile Navbar Fix */
+        .navbar .nav-links {
+            display: none;
+        }
+
+        .navbar .nav-links.active {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            position: absolute;
+            top: 60px;
+            right: 20px;
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: var(--radius);
+           color: #000;
+            z-index: 9999;
+            transition: color 0.3s ease;
+        }
+        .navbar .nav-links.active:hover{
+            color: var(--primary); 
+        }
+
+        /* Container Styles */
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        /* Card Styles */
+        .card {
+            margin-top: 5px;
+            background: rgba(255, 255, 255, 0.1); /* Transparent white */
+    backdrop-filter: blur(10px); /* Blur effect */
+    -webkit-backdrop-filter: blur(10px); /* For Safari support */
+    border-radius: 15px; /* Rounded corners */
+    border: 1px solid rgba(12, 1, 1, 0.278); /* Subtle border */
+    box-shadow: 0 4px 10px #53a9f0(65, 122, 246, 0.773); /* Soft shadow */
+    padding: 20px;
+    margin-bottom: 10px;
+    margin-left: 5px;
+    margin-right: 5px;;
+            
+        }
+
+        
+
+        /* Morning Thoughts Section */
+        .morning-thoughts textarea {
+            width: 90%;
+            height: 150px;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: var(--radius);
+            font-size: 1rem;
+            background: var(--card-bg);
+            color: var(--text);
+            
+            resize: none;
+        }
+
+        
+
+
+        .morning-thoughts textarea:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        /* Task Input Styles */
+        .task-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-direction: column;
+        }
+
+        .task-input input {
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: var(--radius);
+            font-size: 1rem;
+            background: var(--card-bg);
+            color: var(--text);
+            
+            width: 90%;
+        }
+
+        .task-input input:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        .task-input button {
+            padding: 12px 20px;
+            border: none;
+            background-color: var(--primary);
+            color: white;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 1rem;
+            
+            width: 90%;
+        }
+
+        .task-input button:hover {
+            background-color: var(--primary);
+            
+        }
+
+        /* Task List Styles */
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+           
+        }
+
+        .task-item input[type="checkbox"] {
+            cursor: pointer;
+        }
+
+        .task-item .task-text {
+            flex: 1;
+            font-size: 1rem;
+        }
+
+        .task-item .task-text.completed {
+            text-decoration: line-through;
+            color: #888;
+        }
+
+        .task-item .delete-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        .reset-btn {
+            padding: 10px 20px;
+            border: none;
+            background-color:var(--primary);
+            color: white;
+            font-size: 1rem;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .reset-btn:hover {
+            background-color:var(--primary);
+        }
+
+        .task-item .delete-btn:hover {
+            color: var(--primary);
+        }
+/* Create moving gradient circles in the background */
+@keyframes moveCircles {
+    0% {
+        transform: translate(-100px, -100px);
+    }
+    100% {
+        transform: translate(100vw, 100vh);
+    }
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh; /* Ensure body takes up full viewport height */
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Style the moving gradient circles */
+.background-circle {
+    position: absolute;
+    border-radius: 50%;
+    background: conic-gradient(
+        from 180deg,
+        rgba(100, 181, 246, 0.6) 0%,
+        rgba(66, 165, 245, 0.6) 50%,
+        rgba(33, 150, 243, 0.6) 100%
+    );
+    opacity: 0.6;
+    animation: moveCircles 40s linear infinite; /* Controls the speed and direction */
+    pointer-events: none; /* Prevent interaction with the circles */
+    backdrop-filter: blur(40px); /* Blurs the edges more */
+    z-index: -1; /* Make sure the circles stay behind content */
+}
+
+/* Randomize the size, speed, and position of each circle */
+.background-circle:nth-child(1) {
+    width: 150px;
+    height: 150px;
+    top: 10%;
+    left: 10%;
+    animation-duration: 35s;
+}
+.background-circle:nth-child(2) {
+    width: 200px;
+    height: 200px;
+    top: 30%;
+    left: 30%;
+    animation-duration: 40s;
+}
+.background-circle:nth-child(3) {
+    width: 250px;
+    height: 250px;
+    top: 50%;
+    left: 50%;
+    animation-duration: 45s;
+}
+.background-circle:nth-child(4) {
+    width: 100px;
+    height: 100px;
+    top: 70%;
+    left: 70%;
+    animation-duration: 50s;
+}
+.background-circle:nth-child(5) {
+    width: 180px;
+    height: 180px;
+    top: 40%;
+    left: 60%;
+    animation-duration: 40s;
+}
+
+/* Add more circles by duplicating the above code and adjusting positions/sizes */
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .task-input button {
+                width: 100%;
+            }
+
+            .morning-thoughts textarea {
+                height: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">TO DO PLANNER</div>
+        <div class="nav-links">
+            <a href="hourly.html">Hourly schedule</a>
+            <a href="health.html">Health</a>
+            <a href="appointments.html">Appointments</a>
+            <a href="notes.html">Notes</a>
+        </div>
+        <div class="menu-icon" onclick="toggleMenu()">☰</div>
+        <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+    </nav>
+    <!-- Add this in the body to inject moving circles -->
+<div class="background-circle"></div>
+<div class="background-circle"></div>
+<div class="background-circle"></div>
+<div class="background-circle"></div>
+<div class="background-circle"></div>
+<!-- You can add more circles if needed -->
+
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Morning Thoughts Section -->
+        <div class="card" id="morning-thoughts">
+            <h2>Morning Thoughts ☀️</h2>
+            <div class="morning-thoughts">
+                <textarea id="morning-thoughts-input" placeholder="Write your morning thoughts here..."></textarea>
+            </div>
+            <button onclick="saveMorningThoughts()"class="reset-btn">Save</button>
+        </div>
+
+        <!-- Task Sections -->
+        <div class="card" id="work">
+            <h2>Work Tasks 💼</h2>
+            <h3>Small Tasks</h3>
+            <div class="task-input">
+                <input type="text" id="work-small-input" placeholder="Add a small work task" aria-label="Add a small work task">
+                <button onclick="addTask('work', 'small')" aria-label="Add small work task">Add</button>
+            </div>
+            <div class="task-list" id="work-small-list"></div>
+
+            <h3>Major Tasks</h3>
+            <div class="task-input">
+                <input type="text" id="work-major-input" placeholder="Add a major work task" aria-label="Add a major work task">
+                <button onclick="addTask('work', 'major')" aria-label="Add major work task">Add</button>
+            </div>
+            <div class="task-list" id="work-major-list"></div>
+        </div>
+
+        <div class="card" id="personal">
+            <h2>Personal Tasks 🏠</h2>
+            <h3>Small Tasks</h3>
+            <div class="task-input">
+                <input type="text" id="personal-small-input" placeholder="Add a small personal task" aria-label="Add a small personal task">
+                <button onclick="addTask('personal', 'small')" aria-label="Add small personal task">Add</button>
+            </div>
+            <div class="task-list" id="personal-small-list"></div>
+
+            <h3>Major Tasks</h3>
+            <div class="task-input">
+                <input type="text" id="personal-major-input" placeholder="Add a major personal task" aria-label="Add a major personal task">
+                <button onclick="addTask('personal', 'major')" aria-label="Add major personal task">Add</button>
+            </div>
+            <div class="task-list" id="personal-major-list"></div>
+        </div>
+
+        <!-- Reset Tasks Button -->
+        <button onclick="resetTasks()" class="reset-btn" >Reset Tasks</button>
+    </div>
+
+    <script>
+        let tasks = {
+            work: { small: [], major: [] },
+            personal: { small: [], major: [] }
+        };
+
+        let savedMorningThoughts = localStorage.getItem('morningThoughts') || '';
+
+        function loadTasks() {
+            const savedTasks = JSON.parse(localStorage.getItem('tasks'));
+            if (savedTasks) {
+                tasks = savedTasks;
+                renderTasks();
+            }
+        }
+
+        function saveTasks() {
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+        }
+
+        function saveMorningThoughts() {
+            const thoughtsInput = document.getElementById('morning-thoughts-input');
+            savedMorningThoughts = thoughtsInput.value;
+            localStorage.setItem('morningThoughts', savedMorningThoughts);
+            alert('Morning thoughts saved!');
+        }
+
+        function addTask(category, type) {
+            const input = document.getElementById(`${category}-${type}-input`);
+            const taskText = input.value.trim();
+            if (taskText) {
+                tasks[category][type].push({ text: taskText, completed: false });
+                input.value = '';
+                renderTasks();
+                saveTasks();
+            } else {
+                alert("Please enter a task!");
+            }
+        }
+
+        function renderTasks() {
+            renderTaskList('work', 'small');
+            renderTaskList('work', 'major');
+            renderTaskList('personal', 'small');
+            renderTaskList('personal', 'major');
+        }
+
+        function renderTaskList(category, type) {
+            const list = document.getElementById(`${category}-${type}-list`);
+            list.innerHTML = '';
+            tasks[category][type].forEach((task, index) => {
+                const taskItem = document.createElement('div');
+                taskItem.className = 'task-item';
+                taskItem.innerHTML = `
+                    <input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleTask('${category}', '${type}', ${index})">
+                    <span class="task-text ${task.completed ? 'completed' : ''}">${task.text}</span>
+                    <button class="delete-btn" onclick="deleteTask('${category}', '${type}', ${index})">🗑️</button>
+                `;
+                list.appendChild(taskItem);
+            });
+        }
+
+        function toggleTask(category, type, index) {
+            tasks[category][type][index].completed = !tasks[category][type][index].completed;
+            renderTasks();
+            saveTasks();
+        }
+
+        function deleteTask(category, type, index) {
+            tasks[category][type].splice(index, 1);
+            renderTasks();
+            saveTasks();
+        }
+
+        function resetTasks() {
+            const confirmReset = confirm("Are you sure you want to reset all tasks?");
+            if (confirmReset) {
+                localStorage.removeItem('tasks');
+                tasks = {
+                    work: { small: [], major: [] },
+                    personal: { small: [], major: [] }
+                };
+                renderTasks();
+            }
+        }
+
+        function toggleTheme() {
+            const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', theme);
+        }
+
+        function toggleMenu() {
+            const menu = document.querySelector('.navbar .nav-links');
+            menu.classList.toggle('active');
+        }
+
+        window.onload = function () {
+            loadTasks();
+            document.getElementById('morning-thoughts-input').value = savedMorningThoughts;
+        };
+    </script>
+</body>
+</html>
